@@ -1,5 +1,5 @@
 const mongoose = require(`mongoose`);
-const mongoURL = "mongodb://localhost:27017/?readPreference=primary&appName=MongoDB&directConnection=true&tls=false";
+const mongoURL = "mongodb://localhost:27017/iNotebook?readPreference=primary&appName=MongoDB&directConnection=true&tls=false";
 
 const connectToMongo =() =>{
     mongoose.connect(mongoURL,()=>{
