@@ -42,6 +42,15 @@ router.post(`/`,[
         email: req.body.email,
         password: secretPassword
       })
+
+      const data = {
+        user:{
+          id:user.id
+        }
+      }
+      const authToken = jwt.sign(data,JWT_SECRET);
+      console.log("jwtData ==>"+authToken)
+
       
     //   .then(user => res.json(user))
     //   .catch(error=> {
@@ -49,7 +58,8 @@ router.post(`/`,[
     //     res.json({error: 'Please enter a unique value ',message : error.message})
     // });
 
-    res.json(user)
+   // res.json(user)
+   res.json({authToken:authToken})
     }catch(error){
        console.log("error ===>"+error.message);
        res.status(500).send("Error occcur")
