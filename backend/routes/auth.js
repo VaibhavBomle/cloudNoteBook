@@ -6,9 +6,8 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const JWT_SECRET = "WearelearingREACTJS"
 
-
 // Create a User using: POST "/api/auth".   Not required auth
-router.post(`/`,[
+router.post(`/create-user`,[
     body('name',"Enter a valid Name").isLength({min:3}),
     body('password',"Enter a valid password").isLength({min: 5}),
     body('email',"Enter a valid email").isEmail()
@@ -20,7 +19,6 @@ router.post(`/`,[
       return res.status(400).json({ errors: errors.array() });
     }
     
-   
     try{
 
       // Ge user from db
@@ -50,20 +48,40 @@ router.post(`/`,[
       }
       const authToken = jwt.sign(data,JWT_SECRET);
       console.log("jwtData ==>"+authToken)
-
-      
-    //   .then(user => res.json(user))
-    //   .catch(error=> {
-    //     console.log("error====>"+error);
-    //     res.json({error: 'Please enter a unique value ',message : error.message})
-    // });
-
-   // res.json(user)
-   res.json({authToken:authToken})
+      res.json({authToken:authToken})
     }catch(error){
-       console.log("error ===>"+error.message);
-       res.status(500).send("Error occcur")
+       console.log(" create user , error ===>"+error.message);
+       res.status(500).send("Error occcur while user login")
     }
 })
+
+
+// Login end point
+router.post(`/login`,[
+    body('email',"Enter a valid email").isEmail(),
+    body('password',"Enter a valid password").isLength({min: 5})
+], async (req,res)=>{
+   const {email,password} = req.body;
+   try{
+       let user = await User.findOne({email});
+       if(!user){
+        return res.status(400).json({error : "Plz try to login with correct credential"});
+       }
+       const passwordCompare = await bcrypt.compare(password,user.password);
+       if(!passwordCompare){
+          return res.status(400).json({error: "Please try to login with correct credentials!!"})
+       }
+       const data = {
+            user :{
+              id : user.id
+            }
+       }
+       const authToken = jwt.sign(data,JWT_SECRET);
+       res.json({authToken})
+   }catch(error){
+    console.log("Login , error ===>"+error.message);
+    res.status(500).send("Error occcur")
+   }
+});
 
 module.exports = router
