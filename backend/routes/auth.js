@@ -4,9 +4,11 @@ const router = express.Router();
 const { body, validationResult } = require('express-validator');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
-const JWT_SECRET = "WearelearingREACTJS"
+var JWT_SECRET = "WearelearingREACTJS"
+var fetchuser = require(`../middleware/fetchuser`);
 
-// Create a User using: POST "/api/auth".   Not required auth
+
+// ROUTE 1:  Create a User using: POST "/api/auth".   Not required auth
 router.post(`/create-user`,[
     body('name',"Enter a valid Name").isLength({min:3}),
     body('password',"Enter a valid password").isLength({min: 5}),
@@ -56,7 +58,7 @@ router.post(`/create-user`,[
 })
 
 
-// Login end point
+// ROUTE 2:  Login end point
 router.post(`/login`,[
     body('email',"Enter a valid email").isEmail(),
     body('password',"Enter a valid password").isLength({min: 5})
@@ -83,5 +85,20 @@ router.post(`/login`,[
     res.status(500).send("Error occcur")
    }
 });
+
+
+// ROUTE 3: Get Login user
+
+router.get('/getuser',fetchuser, async (req,res)=>{
+  try{
+    const user = await User.findById(req.user.id).select("-password")
+    console.log("user :"+user)
+    res.json(user)
+  }catch(error){
+    console.log("get user , error :"+error)
+    res.status(500).send("Something went wrong while getting user")
+  }
+})
+
 
 module.exports = router
