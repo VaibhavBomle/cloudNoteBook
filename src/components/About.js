@@ -6,10 +6,10 @@ const About = () => {
   // useEffect(()=>{   // This also work
   //   a.update();
   // },[])
-  a.update();
+  //a.update();
   return (
     <div>
-      His name is {a.state.name} and he is in class {a.state.class}
+     This is About.
     </div>
   )
 }
