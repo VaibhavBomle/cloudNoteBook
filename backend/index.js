@@ -14,6 +14,7 @@ app.use(`/api/notes`,require(`./routes/notes`));
 //   res.send('Hello World!!!!!');
 // })
 
+
 app.listen(port, () => {
-  console.log(`Example app listening on port at http://localhost: ${port}`);
+  console.log(`Cloud Notebook Backend listening on port at http://localhost: ${port}`);
 })
