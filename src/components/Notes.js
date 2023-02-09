@@ -1,27 +1,30 @@
-import React, { useContext, useEffect, useRef ,useState} from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import noteContext from "../context/notes/noteContext";
 import NoteItem from "./NoteItem";
 import AddNote from "./AddNote";
 const Notes = () => {
   const context = useContext(noteContext);
-  const { notes, fetchAllNotes } = context;
+  const { notes, fetchAllNotes, editNote } = context;
   useEffect(() => {
     console.log("User Effect..........")
     fetchAllNotes();   // Need to fix this bug -> When we added note, newely added note data not populated
   }, []);
 
   const ref = useRef(null);
-  const [note, setNote] = useState({ etitle: "", edescription: "", etag: "default" });
+  const refClose = useRef(null);
+
+  const [note, setNote] = useState({ etitle: "", edescription: "", etag: "" });
   const updateNote = (currentNote) => {
     console.log("updateNote..........", note)
     ref.current.click();
-  setNote({etitle: currentNote.title,edescription: currentNote.description, etag : currentNote.tag});
+    setNote({ id: currentNote._id, etitle: currentNote.title, edescription: currentNote.description, etag: currentNote.tag });
   }
 
   const handleClick = (e) => {
-    console.log("Updating the note : ",note)
-    e.preventDefault()
-  }   
+    console.log("Updating the note : ", note)
+    editNote(note.id, note.etitle, note.edescription, note.etag);
+    refClose.current.click();
+  }
 
   const onChange = (e) => {
     setNote({ ...note, [e.target.name]: e.target.value });
@@ -31,7 +34,7 @@ const Notes = () => {
     <>
       <AddNote />
       <button ref={ref} type="button" className="btn btn-primary-d-none" data-bs-toggle="modal" data-bs-target="#exampleModal">
-      
+
       </button>
       <div className="modal fade" id="exampleModal" tabIndex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div className="modal-dialog" role="document">
@@ -56,6 +59,8 @@ const Notes = () => {
                     value={note.etitle}
                     aria-describedby="emailHelp"
                     onChange={onChange}
+                    minLength={5} 
+                    required
                   />
                 </div>
                 <div className="mb-3">
@@ -69,6 +74,8 @@ const Notes = () => {
                     value={note.edescription}
                     name="edescription"
                     onChange={onChange}
+                    minLength={5}
+                    required
                   />
                 </div>
                 <div className="mb-3">
@@ -82,6 +89,8 @@ const Notes = () => {
                     value={note.etag}
                     name="etag"
                     onChange={onChange}
+                    minLength={5}
+                    required
                   />
                 </div>
                 {/* <button type="submit" className="btn btn-primary" onClick={handleClick}>
@@ -90,8 +99,8 @@ const Notes = () => {
               </form>
             </div>
             <div className="modal-footer">
-              <button type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="button" onClick={handleClick}  className="btn btn-primary">Update Note</button>
+              <button ref={refClose} type="button" className="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+              <button onClick={handleClick} type="button" className="btn btn-primary">Update Note</button>
             </div>
           </div>
         </div>
@@ -99,6 +108,9 @@ const Notes = () => {
 
       <div className="row my-3">
         <h2>You Notes</h2>
+        <div className="container mx-2">
+          {notes.length === 0 && `No notes to display`}
+        </div>
         {notes.map((note) => {
           return <NoteItem key={note._id} updateNote={updateNote} note={note} />;
         })}

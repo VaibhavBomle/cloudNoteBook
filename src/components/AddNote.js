@@ -30,6 +30,8 @@ const AddNote = () => {
               name="title"
               aria-describedby="emailHelp"
               onChange={onChange}
+              minLength={5}
+              required
             />
           </div>
           <div className="mb-3">
@@ -42,6 +44,8 @@ const AddNote = () => {
               id="description"
               name="description"
               onChange={onChange}
+              minLength={5}
+              required
             />
           </div>
           <div className="mb-3">
@@ -54,6 +58,8 @@ const AddNote = () => {
               id="tag"
               name="tag"
               onChange={onChange}
+              minLength={5}
+              required
             />
           </div>
           <button type="submit" className="btn btn-primary" onClick={handleClick}>
