@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import noteContext from "../context/notes/noteContext";
 import NoteItem from "./NoteItem";
 import AddNote from "./AddNote";
-const Notes = () => {
+const Notes = (props) => {
   const context = useContext(noteContext);
   const { notes, fetchAllNotes, editNote } = context;
   useEffect(() => {
@@ -18,6 +18,7 @@ const Notes = () => {
     console.log("updateNote..........", note)
     ref.current.click();
     setNote({ id: currentNote._id, etitle: currentNote.title, edescription: currentNote.description, etag: currentNote.tag });
+    props.showAlert("Updated successfully","success")
   }
 
   const handleClick = (e) => {
@@ -112,7 +113,7 @@ const Notes = () => {
           {notes.length === 0 && `No notes to display`}
         </div>
         {notes.map((note) => {
-          return <NoteItem key={note._id} updateNote={updateNote} note={note} />;
+          return <NoteItem key={note._id} updateNote={updateNote} note={note} showAlert = {props.showAlert} />;
         })}
       </div>
     </>
